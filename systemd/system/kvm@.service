@@ -1,7 +1,7 @@
 [Unit]
 Description=Qemu/KVM Virtual Machine %I
-After=network.target dnsmasq.service kvm-bridge.network kvm-devices.network
-Wants=network.target dnsmasq.service kvm-bridge.network kvm-devices.network
+After=network.target dnsmasq.service
+Wants=network.target dnsmasq.service
 
 [Service]
 Type=forking
