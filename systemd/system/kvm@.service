@@ -1,0 +1,31 @@
+[Unit]
+Description=Qemu/KVM Virtual Machine %I
+After=network.target dnsmasq.service kvm-bridge.network kvm-devices.network
+Wants=network.target dnsmasq.service kvm-bridge.network kvm-devices.network
+
+[Service]
+Type=forking
+EnvironmentFile=/etc/kvm/%I.conf
+PIDFile=/run/kvm/%I.pid
+TimeoutStopSec=10
+
+ExecStart=/usr/bin/qemu-system-x86_64 \
+    -machine accel=kvm --enable-kvm \
+    -daemonize \
+    -display ${DISPLAY} \
+    -pidfile /run/kvm/%I.pid \
+    -monitor unix:/run/kvm/%I.monitor,server,nowait \
+    -serial telnet:${SERIAL},server,nowait \
+    -runas nobody \
+    -name %I \
+    -drive file=${DISKIMAGE},if=virtio,index=0,cache=none \
+    -net nic,model=virtio,macaddr=${MACADDR} \
+    -net tap,ifname=${TAP},script=no \
+    -m ${MEMORY} \
+    -smp ${SMP} \
+    $EXTRA_ARGS
+
+ExecStop=/bin/bash -c "echo system_powerdown | nc6 -U /run/kvm/%I.monitor -q 10 &> /dev/null"
+
+[Install]
+WantedBy=multi-user.target

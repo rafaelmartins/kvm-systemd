@@ -1,0 +1,8 @@
+DISPLAY=vnc=:1
+SERIAL=127.0.0.1:12345
+DISKIMAGE=/tmp/foo.img
+MACADDR=52:54:00:89:f8:7a
+MEMORY=512M
+SMP=2
+TAP=qtap0
+EXTRA_ARGS=-boot order=cd -cdrom /root/ubuntu-14.04.1-server-amd64.iso
